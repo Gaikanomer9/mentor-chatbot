@@ -18,11 +18,5 @@ def hello_world_error():
     return "Hello {}!\n".format(target)
 
 
-@app.route("/app")
-def hello_app():
-    target = os.environ.get("TARGET", "App")
-    return "Hello {}!\n".format(target)
-
-
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
