@@ -5,20 +5,31 @@ steps:
   # Push the image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/$PROJECT_ID/$_IMAGE_NAME:$COMMIT_SHA"]
-  # Deploy container image to Cloud Run
+  # Deploy container image to Cloud Run with no traffic
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       [
         "run",
         "deploy",
-        "$_SERVICE_NAME",
         "--image",
         "gcr.io/$PROJECT_ID/$_IMAGE_NAME",
+        "--no-traffic",
         "--region",
         "$_REGION",
         "--platform",
         "managed",
         "--allow-unauthenticated",
+      ]
+  # Specify traffic percentage for new revision
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "run",
+        "services",
+        "update-traffic",
+        "$_SERVICE_NAME",
+        "--to-revisions",
+        "LATEST=25",
       ]
 
 images:
