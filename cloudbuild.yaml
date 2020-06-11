@@ -11,6 +11,7 @@ steps:
       [
         "run",
         "deploy",
+        "$_SERVICE_NAME",
         "--image",
         "gcr.io/$PROJECT_ID/$_IMAGE_NAME",
         "--no-traffic",
@@ -30,6 +31,10 @@ steps:
         "$_SERVICE_NAME",
         "--to-revisions",
         "LATEST=25",
+        "--region",
+        "$_REGION",
+        "--platform",
+        "managed",
       ]
 
 images:
