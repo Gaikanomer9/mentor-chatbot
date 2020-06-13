@@ -4,8 +4,8 @@ README.md
 *.pyo
 *.pyd
 __pycache__
-envbotapi
-envbotapi/
+venv
+venv/
 .vscode/
 .vscode
 .git

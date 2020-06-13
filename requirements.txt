@@ -1,2 +1,4 @@
 Flask 
 gunicorn
+pytest
+google-cloud-secret-manager
