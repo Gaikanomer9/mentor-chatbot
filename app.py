@@ -11,6 +11,7 @@ app = Flask(__name__)
 def verify():
     # when the endpoint is registered as a webhook, it must echo back
     # the 'hub.challenge' value it receives in the query arguments
+    print(access_secret_version("445081206902", "facebook-app-token", 1))
     if request.args.get("hub.mode") == "subscribe" and request.args.get(
         "hub.challenge"
     ):

@@ -1,7 +1,7 @@
-from api.app import app
+from app import app
 
 
-def webhook_get():
+def test_webhook_get():
     response = app.test_client().get("/webhook")
     print(response.json)
     assert response.status_code == 200
