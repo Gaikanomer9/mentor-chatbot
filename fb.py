@@ -53,6 +53,13 @@ def handlePostback(sender_psid, received_postback):
         response = {"text": "Thanks!"}
     elif payload == "no":
         response = {"text": "Oops, try sending another image."}
+    elif payload == "get_started":
+        name = getName(sender_psid)
+        response = {
+            "text": "Welcome, "
+            + name
+            + "! I will assist you in learning skills you need. Let's start by choosing the knowledge area you are interested in."
+        }
     callSendAPI(sender_psid, response)
     return
 
@@ -72,3 +79,13 @@ def callSendAPI(sender_psid, response):
     if r.status_code != 200:
         logging.error(r.status_code)
         logging.error(r.text)
+
+
+def getName(sender_psid):
+    r = requests.get(
+        "https://graph.facebook.com/"
+        + sender_psid
+        + "?fields=first_name&access_token="
+        + ACCESS_TOKEN
+    )
+    return r.json().get("first_name")

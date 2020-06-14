@@ -29,6 +29,7 @@ def verify():
 @app.route("/webhook", methods=["POST"])
 def webhook():
     data = request.json
+    print(data)
     if data["object"] == "page":
         for entry in data["entry"]:
             for messaging_event in entry["messaging"]:
@@ -46,4 +47,4 @@ def webhook():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8085)))
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))

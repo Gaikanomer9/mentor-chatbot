@@ -9,3 +9,4 @@ venv/
 .vscode/
 .vscode
 .git
+ngrok

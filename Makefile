@@ -1,4 +1,4 @@
-.PHONY: prepare_venv run_tests
+.PHONY: prepare_venv run_tests ngrok
 
 VENV_NAME?=venv
 PYTHON=${VENV_NAME}/bin/python
@@ -23,4 +23,9 @@ deploy: prepare_venv
 	git push origin master
 
 run:
-	${PYTHON} app.py
+	test "$(PORT)"
+	export PORT="$(PORT)"; ${PYTHON} app.py
+
+ngrok:
+	test "$(PORT)"
+	./ngrok http $(PORT)
