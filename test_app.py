@@ -14,7 +14,9 @@ def test_webhook_challenge_rejected():
 
 
 def test_webhook_challenge_accepted():
-    token = access_secret_version(PROJECT_ID, FB_TOKEN["name"], FB_TOKEN["version"])
+    token = access_secret_version(
+        PROJECT_ID, FB_CHALLENGE["name"], FB_CHALLENGE["version"]
+    )
     response = app.test_client().get(
         "/webhook?hub.verify_token="
         + token

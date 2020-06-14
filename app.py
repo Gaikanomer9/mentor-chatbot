@@ -17,7 +17,7 @@ def verify():
         "hub.challenge"
     ):
         if not request.args.get("hub.verify_token") == access_secret_version(
-            PROJECT_ID, FB_TOKEN["name"], FB_TOKEN["version"]
+            PROJECT_ID, FB_CHALLENGE["name"], FB_CHALLENGE["version"]
         ):
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
@@ -31,7 +31,10 @@ def webhook():
     if data["object"] == "page":
         for entry in data["entry"]:
             for messaging_event in entry["messaging"]:
-                logging.info(messaging_event.get("message"))
+                message = messaging_event.get("message")
+                psid = messaging_event.get("sender").get("id")
+                logging.info(message)
+                logging.info(psid)
         return "ok", 200
     else:
         return "Unknown object in body", 404
