@@ -1,6 +1,6 @@
 from app import app
 from gcp import access_secret_version
-from config import *
+from config import FB_CHALLENGE, PROJECT_ID
 
 
 def test_webhook_challenge_rejected():

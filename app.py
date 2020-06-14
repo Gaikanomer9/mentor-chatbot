@@ -2,9 +2,10 @@ import os
 from flask import request
 from flask import Flask
 from gcp import access_secret_version
-from config import *
+from config import FB_CHALLENGE, PROJECT_ID
 import logging_handler
 import logging
+from fb import handleMessage, handlePostback
 
 app = Flask(__name__)
 
@@ -31,10 +32,14 @@ def webhook():
     if data["object"] == "page":
         for entry in data["entry"]:
             for messaging_event in entry["messaging"]:
-                message = messaging_event.get("message")
                 psid = messaging_event.get("sender").get("id")
-                logging.info(message)
-                logging.info(psid)
+
+                if messaging_event.get("message"):  # someone sent us a message
+                    handleMessage(psid, messaging_event.get("message"))
+
+                elif messaging_event.get("postback"):
+                    handlePostback(psid, messaging_event.get("postback"))
+
         return "ok", 200
     else:
         return "Unknown object in body", 404
