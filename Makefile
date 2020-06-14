@@ -22,4 +22,4 @@ deploy: prepare_venv
 	git push origin master
 
 run:
-	${PYTHON} api/app.py
+	${PYTHON} app.py
