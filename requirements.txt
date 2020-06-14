@@ -2,3 +2,4 @@ Flask
 gunicorn
 pytest
 google-cloud-secret-manager
+google-cloud-logging

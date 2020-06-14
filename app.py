@@ -1,9 +1,10 @@
 import os
-
 from flask import request
 from flask import Flask
 from gcp import access_secret_version
 from config import *
+import logging_handler
+import logging
 
 app = Flask(__name__)
 
@@ -30,11 +31,11 @@ def webhook():
     if data["object"] == "page":
         for entry in data["entry"]:
             for messaging_event in entry["messaging"]:
-                print(messaging_event.get("message"))
+                logging.info(messaging_event.get("message"))
         return "ok", 200
     else:
         return "Unknown object in body", 404
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8082)))
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8085)))
