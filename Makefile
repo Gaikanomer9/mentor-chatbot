@@ -16,6 +16,7 @@ run_tests: prepare_venv
 deploy: prepare_venv
 	test "$(CMT_MSG)"
 	echo "Preparing a new commit which will trigger auto deployment"
+	make run_tests
 	echo "Tests passed succesfully"
 	git add --all
 	git commit -m "$(CMT_MSG)"

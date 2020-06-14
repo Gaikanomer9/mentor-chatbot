@@ -16,11 +16,44 @@ def handleMessage(sender_psid, received_message):
             + received_message.get("text")
             + ". Now send the image"
         }
+    elif received_message.get("attachments"):
+        attachment_url = received_message["attachments"][0].get("payload").get("url")
+        response = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [
+                        {
+                            "title": "Is this the right picture?",
+                            "subtitle": "Tap a button to answer.",
+                            "image_url": attachment_url,
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Yes!",
+                                    "payload": "yes",
+                                },
+                                {"type": "postback", "title": "No!", "payload": "no",},
+                            ],
+                        }
+                    ],
+                },
+            }
+        }
     callSendAPI(sender_psid, response)
     return
 
 
 def handlePostback(sender_psid, received_postback):
+    response = {}
+    payload = received_postback.get("payload")
+
+    if payload == "yes":
+        response = {"text": "Thanks!"}
+    elif payload == "no":
+        response = {"text": "Oops, try sending another image."}
+    callSendAPI(sender_psid, response)
     return
 
 
