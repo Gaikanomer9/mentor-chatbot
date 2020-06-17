@@ -1,4 +1,14 @@
 from google.cloud import secretmanager
+from google.cloud import firestore
+
+# Project ID is determined by the GCLOUD_PROJECT environment variable
+db = firestore.Client()
+
+
+def store_skill_request(psid, request):
+    db.collection(u"skill_requests").add(
+        {"psid": psid, "request": request, "timestamp": firestore.SERVER_TIMESTAMP}
+    )
 
 
 def access_secret_version(project_id, secret_id, version_id):

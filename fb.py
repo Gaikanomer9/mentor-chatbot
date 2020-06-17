@@ -3,7 +3,7 @@ import json
 import logging_handler
 import logging
 from config import FB_TOKEN, PROJECT_ID
-from gcp import access_secret_version
+from gcp import access_secret_version, store_skill_request
 
 ACCESS_TOKEN = access_secret_version(PROJECT_ID, FB_TOKEN["name"], FB_TOKEN["version"])
 
@@ -56,10 +56,56 @@ def handlePostback(sender_psid, received_postback):
     elif payload == "get_started":
         name = getName(sender_psid)
         response = {
-            "text": "Welcome, "
-            + name
-            + "! I will assist you in learning skills you need. Let's start by choosing the knowledge area you are interested in."
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "button",
+                    "text": "Welcome, "
+                    + name
+                    + "! I will assist you in learning skills you need. Let's start by choosing the knowledge area you are interested in.",
+                    "buttons": [
+                        {
+                            "type": "postback",
+                            "title": "Show skills",
+                            "payload": "show_skills",
+                        }
+                    ],
+                },
+            }
         }
+    elif payload == "show_skills":
+        response = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "button",
+                    "text": "Select the interesting knowledge area for you or submit the desired skill and get notified when it's available",
+                    "buttons": [
+                        {
+                            "type": "postback",
+                            "title": "Kubernetes",
+                            "payload": "apply_for_kubernetes",
+                        },
+                        {
+                            "type": "postback",
+                            "title": "Digital Marketing",
+                            "payload": "apply_for_digital_marketing",
+                        },
+                        {
+                            "type": "postback",
+                            "title": "Submit new",
+                            "payload": "submit_skill",
+                        },
+                    ],
+                },
+            }
+        }
+    elif "apply_for" in payload:
+        response = {
+            "text": "Cool! Will start learning this as soon as it's implemented!"
+        }
+    elif payload == "submit_skill":
+        response = {"text": "Sure, what would you like to learn?"}
     callSendAPI(sender_psid, response)
     return
 
