@@ -5,6 +5,54 @@ from google.cloud import firestore
 db = firestore.Client()
 
 
+def get_progress_skill(psid, skill):
+    doc = db.collection("progress_skills").document(str(psid) + "_" + str(skill)).get()
+    if doc.exists:
+        return doc.to_dict()
+    else:
+        return None
+
+
+def get_progress_skills(psid):
+    skills_ref = db.collection("progress_skills")
+    query = skills_ref.where("psid", "==", str(psid))
+    docs = query.stream()
+    skills = []
+    for doc in docs:
+        skills.append(doc.to_dict())
+    return skills
+
+
+def delete_progress_skill(psid, skill):
+    db.collection("progress_skills").document(str(psid) + "_" + str(skill)).delete()
+
+
+def store_progress_skill(psid, level, skill, time, assignment, completed=False):
+    db.collection("progress_skills").document(str(psid) + "_" + str(skill)).set(
+        {
+            "psid": psid,
+            "skill": skill,
+            "level": level,
+            "time": time,
+            "cur_assignment": assignment,
+            "timestamp_creation": firestore.SERVER_TIMESTAMP,
+            "completed": completed,
+        }
+    )
+
+
+def retrieve_context(psid):
+    doc = db.collection(u"context").document(psid).get()
+    if doc.exists:
+        return doc.to_dict()
+    else:
+        return {"context": ""}
+
+
+def store_context(psid, context):
+    db.collection(u"context").document(psid).set({"context": context})
+
+
 def store_skill_request(psid, request):
     db.collection(u"skill_requests").add(
         {"psid": psid, "request": request, "timestamp": firestore.SERVER_TIMESTAMP}

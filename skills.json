@@ -1,0 +1,68 @@
+{
+  "skills": [
+    {
+      "name": "Docker",
+      "image_url": "https://www.docker.com/sites/default/files/social/docker_facebook_share.png",
+      "assignments": [
+        {
+          "type": "Online Course",
+          "name": "Getting Started with Docker",
+          "author": "Nigel Poulton",
+          "release_date": "01.08.2016",
+          "level": 0,
+          "rating": 4.5,
+          "url": "https://app.pluralsight.com/library/courses/docker-getting-started"
+        },
+        {
+          "type": "Online Course",
+          "name": "Docker Deep Dive",
+          "author": "Nigel Poulton",
+          "release_date": "04.01.2018",
+          "level": 2,
+          "rating": 5.0,
+          "url": "https://app.pluralsight.com/library/courses/docker-deep-dive-update/table-of-contents"
+        }
+      ]
+    },
+    {
+      "name": "Frontend Dev",
+      "image_url": "https://www.udacity.com/www-proxy/contentful/assets/2y9b3o528xhq/5YhXXuS0hIw6JV3nJr3GgP/682bf2a70a98c3e466f26c2c2a812d65/front-end-web-developer-nanodegree--nd001.jpg",
+      "assignments": [
+        {
+          "type": "Online Course",
+          "name": "Getting Started with Docker",
+          "author": "Nigel Poulton",
+          "release_date": "01.08.2016",
+          "level": 0,
+          "rating": 4.5,
+          "url": "https://app.pluralsight.com/library/courses/docker-getting-started"
+        }
+      ]
+    },
+    {
+      "name": "Backend Dev",
+      "image_url": "",
+      "assignments": []
+    },
+    {
+      "name": "Photoshop",
+      "image_url": "",
+      "assignments": []
+    },
+    {
+      "name": "Skill 4",
+      "image_url": "",
+      "assignments": []
+    },
+    {
+      "name": "Skill 5",
+      "image_url": "",
+      "assignments": []
+    },
+    {
+      "name": "Skill 6",
+      "image_url": "",
+      "assignments": []
+    }
+  ]
+}
