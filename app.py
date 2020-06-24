@@ -55,8 +55,8 @@ def notifications():
     yesterday = str(yesterday.year) + str(yesterday.month) + str(yesterday.day)
     notifications = get_notifications(today)
     y_notifs = get_notifications(yesterday)
-    # delete_notifications(today)
-    # delete_notifications(yesterday)
+    delete_notifications(today)
+    delete_notifications(yesterday)
     notifications = notifications + y_notifs
     for notif in notifications:
         generate_one_time_template(
