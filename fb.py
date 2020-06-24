@@ -417,7 +417,7 @@ def template_skills_progress(psid):
                 "default_action": {
                     "type": "web_url",
                     "url": asign_url,
-                    "webview_height_ratio": "FULL",
+                    "webview_height_ratio": "COMPACT",
                 },
                 "buttons": buttons,
             }
@@ -430,7 +430,11 @@ def template_skills_progress(psid):
         request = {
             "attachment": {
                 "type": "template",
-                "payload": {"template_type": "generic", "elements": elements,},
+                "payload": {
+                    "template_type": "generic",
+                    "image_aspect_ratio": "square",
+                    "elements": elements,
+                },
             }
         }
     callSendAPI(psid, request)

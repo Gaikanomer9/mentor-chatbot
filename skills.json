@@ -2,17 +2,47 @@
   "skills": [
     {
       "name": "Docker",
-      "image_url": "https://www.docker.com/sites/default/files/social/docker_facebook_share.png",
+      "image_url": "https://storage.googleapis.com/public_image_skills_mentor_chatbot/icons8-docker-480.png",
       "assignments": [
+        {
+          "type": "Online Course",
+          "name": "Internet History, Technology, and Security",
+          "author": "Charles Russell Severance",
+          "release_date": "01.08.2016",
+          "level": 0,
+          "rating": 4.8,
+          "url": "https://www.coursera.org/learn/internet-history",
+          "time_hours": 15
+        },
+        {
+          "type": "Handbook",
+          "name": "Git Handbook",
+          "author": "Github",
+          "release_date": "2017",
+          "level": 0,
+          "rating": 4.8,
+          "url": "https://guides.github.com/introduction/git-handbook/",
+          "time_hours": 1
+        },
         {
           "type": "Online Course",
           "name": "Getting Started with Docker",
           "author": "Nigel Poulton",
           "release_date": "01.08.2016",
-          "level": 0,
+          "level": 1,
           "rating": 4.5,
           "url": "https://app.pluralsight.com/library/courses/docker-getting-started",
           "time_hours": 5
+        },
+        {
+          "type": "Book",
+          "name": "The Docker Book: Containerization is the new virtualization",
+          "author": "James Turnbull",
+          "release_date": "2015",
+          "level": 1,
+          "rating": 4.3,
+          "url": "https://www.amazon.com/gp/product/B00LRROTI4/",
+          "time_hours": 6
         },
         {
           "type": "Online Course",
@@ -28,43 +58,220 @@
     },
     {
       "name": "Frontend Dev",
-      "image_url": "https://www.udacity.com/www-proxy/contentful/assets/2y9b3o528xhq/5YhXXuS0hIw6JV3nJr3GgP/682bf2a70a98c3e466f26c2c2a812d65/front-end-web-developer-nanodegree--nd001.jpg",
+      "image_url": "https://storage.googleapis.com/public_image_skills_mentor_chatbot/icons8-js-96.png",
       "assignments": [
         {
           "type": "Online Course",
-          "name": "Getting Started with Docker",
-          "author": "Nigel Poulton",
+          "name": "Internet History, Technology, and Security",
+          "author": "Charles Russell Severance",
           "release_date": "01.08.2016",
           "level": 0,
+          "rating": 4.8,
+          "url": "https://www.coursera.org/learn/internet-history",
+          "time_hours": 15
+        },
+        {
+          "type": "Handbook",
+          "name": "Git Handbook",
+          "author": "Github",
+          "release_date": "2017",
+          "level": 0,
+          "rating": 4.8,
+          "url": "https://guides.github.com/introduction/git-handbook/",
+          "time_hours": 1
+        },
+        {
+          "type": "Online Course",
+          "name": "Learn HTML",
+          "author": "Codecademy",
+          "release_date": "Unknown",
+          "level": 1,
           "rating": 4.5,
-          "url": "https://app.pluralsight.com/library/courses/docker-getting-started"
+          "url": "https://www.codecademy.com/learn/learn-html",
+          "time_hours": 9
+        },
+        {
+          "type": "Online Course",
+          "name": "Learn CSS",
+          "author": "Codecademy",
+          "release_date": "Unknown",
+          "level": 1,
+          "rating": 4.6,
+          "url": "https://www.codecademy.com/learn/learn-css",
+          "time_hours": 15
+        },
+        {
+          "type": "Online Course",
+          "name": "Learn JavaScript",
+          "author": "Codecademy",
+          "release_date": "Unknown",
+          "level": 1,
+          "rating": 4.4,
+          "url": "https://www.codecademy.com/learn/introduction-to-javascript",
+          "time_hours": 30
+        },
+        {
+          "type": "Article",
+          "name": "Pick the right framework",
+          "author": "Giorgi Bakradze",
+          "release_date": "Unknown",
+          "level": 2,
+          "rating": 4.6,
+          "url": "https://www.toptal.com/javascript/choosing-best-front-end-framework",
+          "time_hours": 30
         }
       ]
     },
     {
       "name": "Backend Dev",
-      "image_url": "",
-      "assignments": []
+      "image_url": "https://storage.googleapis.com/public_image_skills_mentor_chatbot/icons8-server-100.png",
+      "assignments": [
+        {
+          "type": "Online Course",
+          "name": "Internet History, Technology, and Security",
+          "author": "Charles Russell Severance",
+          "release_date": "01.08.2016",
+          "level": 0,
+          "rating": 4.8,
+          "url": "https://www.coursera.org/learn/internet-history",
+          "time_hours": 15
+        },
+        {
+          "type": "Handbook",
+          "name": "Git Handbook",
+          "author": "Github",
+          "release_date": "2017",
+          "level": 0,
+          "rating": 4.8,
+          "url": "https://guides.github.com/introduction/git-handbook/",
+          "time_hours": 1
+        },
+        {
+          "type": "Project",
+          "name": "Project Academy Java and Python",
+          "author": "Jetbrains",
+          "release_date": "2020",
+          "level": 2,
+          "rating": 4.9,
+          "url": "https://www.jetbrains.com/lp/academy",
+          "time_hours": 30
+        }
+      ]
     },
     {
       "name": "Photoshop",
-      "image_url": "",
-      "assignments": []
+      "image_url": "https://storage.googleapis.com/public_image_skills_mentor_chatbot/icons8-adobe-photoshop-400.png",
+      "assignments": [
+        {
+          "type": "Online Course",
+          "name": "Ultimate Photoshop Training: From Beginner to Proy",
+          "author": "Cristian Doru Barin",
+          "release_date": "2019",
+          "level": 2,
+          "rating": 4.6,
+          "url": "https://www.udemy.com/course/ultimate-photoshop-training-from-beginner-to-pro/",
+          "time_hours": 14
+        }
+      ]
     },
     {
-      "name": "Skill 4",
-      "image_url": "",
-      "assignments": []
+      "name": "Kubernetes",
+      "image_url": "https://storage.googleapis.com/public_image_skills_mentor_chatbot/icons8-kubernetes-480.png",
+      "assignments": [
+        {
+          "type": "Online Course",
+          "name": "Internet History, Technology, and Security",
+          "author": "Charles Russell Severance",
+          "release_date": "01.08.2016",
+          "level": 0,
+          "rating": 4.8,
+          "url": "https://www.coursera.org/learn/internet-history",
+          "time_hours": 15
+        },
+        {
+          "type": "Handbook",
+          "name": "Git Handbook",
+          "author": "Github",
+          "release_date": "2017",
+          "level": 0,
+          "rating": 4.8,
+          "url": "https://guides.github.com/introduction/git-handbook/",
+          "time_hours": 1
+        },
+        {
+          "type": "Online Course",
+          "name": "Kubernetes path",
+          "author": "Various Authors",
+          "release_date": "2019",
+          "level": 2,
+          "rating": 4.9,
+          "url": "https://app.pluralsight.com/paths/skill/kubernetes-administration",
+          "time_hours": 13
+        }
+      ]
     },
     {
-      "name": "Skill 5",
-      "image_url": "",
-      "assignments": []
+      "name": "Networks",
+      "image_url": "https://storage.googleapis.com/public_image_skills_mentor_chatbot/icons8-router-64.png",
+      "assignments": [
+        {
+          "type": "Online Course",
+          "name": "Internet History, Technology, and Security",
+          "author": "Charles Russell Severance",
+          "release_date": "01.08.2016",
+          "level": 0,
+          "rating": 4.8,
+          "url": "https://www.coursera.org/learn/internet-history",
+          "time_hours": 15
+        },
+        {
+          "type": "Online Course",
+          "name": "Networking Concepts and Protocols",
+          "author": "Ross Bagurdes",
+          "release_date": "20.03.2018",
+          "level": 2,
+          "rating": 5.0,
+          "url": "https://app.pluralsight.com/library/courses/comptia-network-plus-networking-concepts/table-of-contents",
+          "time_hours": 6
+        }
+      ]
     },
     {
-      "name": "Skill 6",
-      "image_url": "",
-      "assignments": []
+      "name": "Product Management",
+      "image_url": "https://storage.googleapis.com/public_image_skills_mentor_chatbot/icons8-product-100.png",
+      "assignments": [
+        {
+          "type": "Online Course",
+          "name": "Internet History, Technology, and Security",
+          "author": "Charles Russell Severance",
+          "release_date": "01.08.2016",
+          "level": 0,
+          "rating": 4.8,
+          "url": "https://www.coursera.org/learn/internet-history",
+          "time_hours": 15
+        },
+        {
+          "type": "Article",
+          "name": "Articles about Scrum",
+          "author": "Various authors",
+          "release_date": "2018",
+          "level": 1,
+          "rating": 4.8,
+          "url": "https://www.scrum.org/pathway/product-owner-learning-path",
+          "time_hours": 4
+        },
+
+        {
+          "type": "Book",
+          "name": "Professional Product Owner",
+          "author": "Don McGreal",
+          "release_date": "2018",
+          "level": 2,
+          "rating": 4.8,
+          "url": "https://www.amazon.com/Professional-Product-Owner-Leveraging-Competitive/dp/0134686470",
+          "time_hours": 30
+        }
+      ]
     }
   ]
 }
