@@ -284,6 +284,15 @@ def generate_template_complete_task(sender_psid, payload):
             assignment,
         )
         template_skills_task(sender_psid, skill_progress["skill"])
+        skill_data = get_skill(int(skill_progress["skill"]))
+        course_time = skill_data["assignments"][assignment]["time_hours"]
+        gen_templ_one_time_req(
+            sender_psid,
+            skill_progress["skill"],
+            assignment,
+            skill_progress["time"],
+            course_time,
+        )
 
 
 def generate_template_show_skills(sender_psid):
@@ -295,62 +304,61 @@ def generate_template_show_skills(sender_psid):
     callSendAPI(sender_psid, request)
 
 
+def find_skill(progress_list, skill_num):
+    for pr in progress_list:
+        if str(pr["skill"]) == str(skill_num):
+            return pr
+
+
 def template_skills_task(psid, skill_num):
     buttons = []
     skills = get_progress_skills(psid)
-    for skill in skills:
-        if str(skill["skill"]) != str(skill_num):
-            continue
-        skill = skills[int(skill_num)]
-        skill_data = get_skill(skill["skill"])
-        asign_type = skill_data["assignments"][int(skill["cur_assignment"])]["type"]
-        asign_name = skill_data["assignments"][int(skill["cur_assignment"])]["name"]
-        asign_author = skill_data["assignments"][int(skill["cur_assignment"])]["author"]
-        asign_rating = skill_data["assignments"][int(skill["cur_assignment"])]["rating"]
-        asign_url = skill_data["assignments"][int(skill["cur_assignment"])]["url"]
-        asign_started = skill["timestamp_creation"]
+    print(skills)
+    print(skill_num)
+    skill = find_skill(skills, int(skill_num))
+    skill_data = get_skill(int(skill_num))
+    print(skill_data)
+    print("cur asignment" + str(skill["cur_assignment"]))
+    asign_type = skill_data["assignments"][int(skill["cur_assignment"])]["type"]
+    asign_name = skill_data["assignments"][int(skill["cur_assignment"])]["name"]
+    asign_author = skill_data["assignments"][int(skill["cur_assignment"])]["author"]
+    asign_rating = skill_data["assignments"][int(skill["cur_assignment"])]["rating"]
+    asign_url = skill_data["assignments"][int(skill["cur_assignment"])]["url"]
+    asign_started = skill["timestamp_creation"]
 
-        text = (
-            "Your new assignment is the "
-            + asign_type
-            + ' "'
-            + asign_name
-            + '" by '
-            + asign_author
-            + ". \n\n"
-        )
-        text += (
-            "Rating: "
-            + str(asign_rating)
-            + "\n\n"
-            + "Started: "
-            + str(asign_started)[:10]
-        )
+    text = (
+        "Your new assignment is the "
+        + asign_type
+        + ' "'
+        + asign_name
+        + '" by '
+        + asign_author
+        + ". \n\n"
+    )
+    text += (
+        "Rating: " + str(asign_rating) + "\n\n" + "Started: " + str(asign_started)[:10]
+    )
 
-        buttons = [
-            {
-                "type": "web_url",
-                "title": "Go to task",
-                "url": asign_url,
-                "webview_height_ratio": "full",
-            },
-            {
-                "type": "postback",
-                "title": "Mark as done",
-                "payload": "completed_" + str(skill["skill"]),
-            },
-        ]
-        request = {
-            "attachment": {
-                "type": "template",
-                "payload": {
-                    "template_type": "button",
-                    "text": text,
-                    "buttons": buttons,
-                },
-            }
+    buttons = [
+        {
+            "type": "web_url",
+            "title": "Go to task",
+            "url": asign_url,
+            "webview_height_ratio": "full",
+        },
+        {
+            "type": "postback",
+            "title": "Mark as done",
+            "payload": "completed_" + str(skill["skill"]),
+        },
+    ]
+    request = {
+        "attachment": {
+            "type": "template",
+            "payload": {"template_type": "button", "text": text, "buttons": buttons,},
         }
-        callSendAPI(psid, request)
+    }
+    callSendAPI(psid, request)
 
 
 def template_skills_progress(psid):
@@ -525,7 +533,7 @@ def generateQuickRepliesSkills(page):
                     "payload": "previous_page_" + str(page - 1),
                 }
             )
-        for i in range(page * pagination, page * pagination + pagination - 1):
+        for i in range(page * pagination, page * pagination + pagination):
             if i >= skills_n:
                 break
             quick_replies.append(
