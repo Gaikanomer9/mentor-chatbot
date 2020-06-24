@@ -1,11 +1,12 @@
 import os
 from flask import request
 from flask import Flask
-from gcp import access_secret_version
+from gcp import access_secret_version, get_notifications, delete_notifications
 from config import FB_CHALLENGE
 import logging_handler
 import logging
-from fb import handleMessage, handlePostback
+from fb import handleMessage, handlePostback, handleOptin, generate_one_time_template
+from datetime import date, timedelta
 
 app = Flask(__name__)
 
@@ -38,10 +39,30 @@ def webhook():
 
                 elif messaging_event.get("postback"):
                     handlePostback(psid, messaging_event.get("postback"))
+                elif messaging_event.get("optin"):
+                    handleOptin(psid, messaging_event.get("optin"))
 
         return "ok", 200
     else:
         return "Unknown object in body", 404
+
+
+@app.route("/notifications", methods=["GET"])
+def notifications():
+    today = date.today()
+    yesterday = date.today() - timedelta(days=1)
+    today = str(today.year) + str(today.month) + str(today.day)
+    yesterday = str(yesterday.year) + str(yesterday.month) + str(yesterday.day)
+    notifications = get_notifications(today)
+    y_notifs = get_notifications(yesterday)
+    # delete_notifications(today)
+    # delete_notifications(yesterday)
+    notifications = notifications + y_notifs
+    for notif in notifications:
+        generate_one_time_template(
+            notif["token"], int(notif["cur_assignment"]), int(notif["skill"])
+        )
+    return "ok", 200
 
 
 if __name__ == "__main__":

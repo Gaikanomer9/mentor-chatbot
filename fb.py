@@ -2,6 +2,7 @@ import requests
 import json
 import logging_handler
 import logging
+from datetime import date, timedelta
 from config import FB_TOKEN, PROJECT_ID
 from gcp import (
     access_secret_version,
@@ -12,6 +13,7 @@ from gcp import (
     get_progress_skills,
     get_progress_skill,
     delete_progress_skill,
+    save_notification,
 )
 
 ACCESS_TOKEN = access_secret_version(PROJECT_ID, FB_TOKEN["name"], FB_TOKEN["version"])
@@ -19,6 +21,29 @@ ACCESS_TOKEN = access_secret_version(PROJECT_ID, FB_TOKEN["name"], FB_TOKEN["ver
 skill_selection_text = "Send me the name of the skill you want to learn or simply select one of the already available skills below: "
 level_selection_text = "Perfect! What is your approximate level of knowledge in "
 time_selection_text = "How much time for learning this topic do you have per week?"
+
+
+def handleOptin(sender_psid, received_message):
+    if received_message.get("type") == "one_time_notif_req":
+        token = received_message.get("one_time_notif_token")
+        payload = received_message.get("payload")
+        skill = payload.split("_")[3]
+        assignment = payload.split("_")[4]
+        user_time = float(payload.split("_")[5])
+        course_time = float(payload.split("_")[6])
+        time_per_day = user_time / 7.0
+        days_to_complete = int(course_time / time_per_day)
+        if days_to_complete > 10:
+            days_to_complete = 10
+        notif_date = date.today() + timedelta(days=days_to_complete)
+        notif_date = str(notif_date.year) + str(notif_date.month) + str(notif_date.day)
+        save_notification(sender_psid, skill, assignment, notif_date, token)
+        request = {
+            "text": "All right! I will check up on you after "
+            + str(days_to_complete)
+            + " days."
+        }
+        callSendAPI(sender_psid, request)
 
 
 def handleMessage(sender_psid, received_message):
@@ -52,9 +77,9 @@ def handleMessage(sender_psid, received_message):
             generate_template_show_skills(sender_psid)
             return
         else:
-            # default response
-            response = {"text": "Didn't get that, sorry!"}
-            callSendAPI(sender_psid, response)
+            # default request
+            request = {"text": "Didn't get that, sorry!"}
+            callSendAPI(sender_psid, request)
     return
 
 
@@ -94,20 +119,20 @@ def handlePostback(sender_psid, received_postback):
 
 
 def template_skills_apply(sender_psid):
-    response = {"text": "Cool! Will start learning this as soon as it's implemented!"}
-    callSendAPI(sender_psid, response)
+    request = {"text": "Cool! Will start learning this as soon as it's implemented!"}
+    callSendAPI(sender_psid, request)
 
 
 def gen_temp_submit_skill(sender_psid):
-    response = {"text": "Sure, what would you like to learn?"}
+    request = {"text": "Sure, what would you like to learn?"}
     store_context(sender_psid, "submit_skill")
-    callSendAPI(sender_psid, response)
+    callSendAPI(sender_psid, request)
 
 
 def gen_temp_remove(sender_psid, payload):
     delete_progress_skill(sender_psid, payload.split("_")[1])
-    response = {"text": "The task was removed"}
-    callSendAPI(sender_psid, response)
+    request = {"text": "The task was removed"}
+    callSendAPI(sender_psid, request)
     template_skills_progress(sender_psid)
 
 
@@ -126,13 +151,13 @@ def gen_temp_get_start_again(sender_psid, payload):
 
 def gen_temp_get_started(sender_psid):
     name = getName(sender_psid)
-    response = {
+    request = {
         "text": "Welcome, "
         + name
         + "! Hello! I'm Raido bot and I will help you learn skills you want. I can coach you on learning the whole knowledge path (like frontend dev or DevOps) or help you get the specific skill (e.g. Photoshop, Docker).",
     }
-    callSendAPI(sender_psid, response)
-    response = {
+    callSendAPI(sender_psid, request)
+    request = {
         "attachment": {
             "type": "template",
             "payload": {
@@ -148,43 +173,43 @@ def gen_temp_get_started(sender_psid):
             },
         }
     }
-    callSendAPI(sender_psid, response)
+    callSendAPI(sender_psid, request)
 
 
 def generate_quick_reply_pagination(payload, sender_psid):
-    response = {
+    request = {
         "text": skill_selection_text,
         "quick_replies": generateQuickRepliesSkills(int(payload.split("_")[2])),
     }
-    callSendAPI(sender_psid, response)
+    callSendAPI(sender_psid, request)
 
 
 def generate_quick_reply_skill(payload, sender_psid):
-    response = {
+    request = {
         "text": level_selection_text
         + get_skill(int(payload.split("_")[2]))["name"]
         + "?",
         "quick_replies": generateQuickRepliesLevel(int(payload.split("_")[2])),
     }
-    callSendAPI(sender_psid, response)
+    callSendAPI(sender_psid, request)
 
 
 def generate_quick_reply_level(payload, sender_psid):
-    response = {
+    request = {
         "text": time_selection_text,
         "quick_replies": generateQuickRepliesTime(
             int(payload.split("_")[0]), payload.split("_")[2]
         ),
     }
-    callSendAPI(sender_psid, response)
+    callSendAPI(sender_psid, request)
 
 
 def generate_template_skill_submission(sender_psid, received_message):
     store_skill_request(sender_psid, received_message.get("text"))
-    response = {
+    request = {
         "text": "Great! Would you like to get a one-time notification when I have this skill?"
     }
-    callSendAPI(sender_psid, response)
+    callSendAPI(sender_psid, request)
 
 
 def generate_template_time_picker(payload, sender_psid):
@@ -193,11 +218,37 @@ def generate_template_time_picker(payload, sender_psid):
     time = payload.split("_")[3]
     assignment = get_next_assignment(skill, level, -1)
     store_progress_skill(sender_psid, level, skill, time, assignment)
-    response = {
-        "text": "Awesome! You can always check the current progress and assignment for your skill in the menu. Your first task is the following:"
+    skill_data = get_skill(int(skill))
+    task_type = skill_data["assignments"][assignment]["type"]
+    task_name = skill_data["assignments"][assignment]["name"]
+    course_time = skill_data["assignments"][assignment]["time_hours"]
+    request = {
+        "text": "Awesome! To check the progress and current task for your skill use the menu."
     }
-    callSendAPI(sender_psid, response)
+    callSendAPI(sender_psid, request)
     template_skills_task(sender_psid, skill)
+    gen_templ_one_time_req(sender_psid, skill, assignment, time, course_time)
+
+
+def gen_templ_one_time_req(sender_psid, skill, assignment, user_time, course_time):
+    request = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "one_time_notif_req",
+                "title": "Check on your progress for the task in a couple of days?",
+                "payload": "one_time_request_"
+                + str(skill)
+                + "_"
+                + str(assignment)
+                + "_"
+                + str(user_time)
+                + "_"
+                + str(course_time),
+            },
+        }
+    }
+    callSendAPI(sender_psid, request)
 
 
 def generate_template_complete_task(sender_psid, payload):
@@ -219,11 +270,11 @@ def generate_template_complete_task(sender_psid, payload):
             skill_progress["cur_assignment"],
             completed=True,
         )
-        response = {
+        request = {
             "text": "Congratulations! You completed learning of the "
             + get_skill(skill_progress["skill"])["name"]
         }
-        callSendAPI(sender_psid, response)
+        callSendAPI(sender_psid, request)
     else:
         store_progress_skill(
             sender_psid,
@@ -236,12 +287,12 @@ def generate_template_complete_task(sender_psid, payload):
 
 
 def generate_template_show_skills(sender_psid):
-    response = {
+    request = {
         "text": skill_selection_text,
         "quick_replies": generateQuickRepliesSkills(0),
     }
     store_context(sender_psid, "skill_selection")
-    callSendAPI(sender_psid, response)
+    callSendAPI(sender_psid, request)
 
 
 def template_skills_task(psid, skill_num):
@@ -260,7 +311,7 @@ def template_skills_task(psid, skill_num):
         asign_started = skill["timestamp_creation"]
 
         text = (
-            "Your current assignment is the "
+            "Your new assignment is the "
             + asign_type
             + ' "'
             + asign_name
@@ -289,7 +340,7 @@ def template_skills_task(psid, skill_num):
                 "payload": "completed_" + str(skill["skill"]),
             },
         ]
-        response = {
+        request = {
             "attachment": {
                 "type": "template",
                 "payload": {
@@ -299,7 +350,7 @@ def template_skills_task(psid, skill_num):
                 },
             }
         }
-        callSendAPI(psid, response)
+        callSendAPI(psid, request)
 
 
 def template_skills_progress(psid):
@@ -372,17 +423,17 @@ def template_skills_progress(psid):
             }
         )
     if len(elements) == 0:
-        response = {
+        request = {
             "text": "Currently, you don't have any active skills. Start be selecting the skill you want to learn. You can see the list of available skills in the menu."
         }
     else:
-        response = {
+        request = {
             "attachment": {
                 "type": "template",
                 "payload": {"template_type": "generic", "elements": elements,},
             }
         }
-    callSendAPI(psid, response)
+    callSendAPI(psid, request)
 
 
 def get_next_assignment(skill, level, cur_assignment):
@@ -408,22 +459,27 @@ def generateQuickRepliesTime(skill_num, level):
     quick_replies = [
         {
             "content_type": "text",
-            "title": "< 1H per week",
+            "title": "3 Hours",
             "payload": str(level) + "_" + str(skill_num) + "_time_1",
         },
         {
             "content_type": "text",
-            "title": "< 3H per week",
+            "title": "5 Hours",
             "payload": str(level) + "_" + str(skill_num) + "_time_3",
         },
         {
             "content_type": "text",
-            "title": "< 7H per week",
+            "title": "8 Hours",
             "payload": str(level) + "_" + str(skill_num) + "_time_7",
         },
         {
             "content_type": "text",
-            "title": "< 15H per week",
+            "title": "13 Hours",
+            "payload": str(level) + "_" + str(skill_num) + "_time_15",
+        },
+        {
+            "content_type": "text",
+            "title": "21 Hours",
             "payload": str(level) + "_" + str(skill_num) + "_time_15",
         },
     ]
@@ -487,8 +543,56 @@ def generateQuickRepliesSkills(page):
     return quick_replies
 
 
-def callSendAPI(sender_psid, response):
-    request = json.dumps({"recipient": {"id": sender_psid}, "message": response})
+def generate_one_time_template(token, assignment, skill):
+    skill_data = get_skill(int(skill))
+    asign_name = skill_data["assignments"][int(assignment)]["name"]
+    request = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "button",
+                "text": 'Hey! This is a reminder for the task "'
+                + str(asign_name)
+                + " you had. Did you make it and ready for a new challenge?",
+                "buttons": [
+                    {
+                        "type": "postback",
+                        "title": "Show my skills",
+                        "payload": "my_skills",
+                    },
+                    {
+                        "type": "postback",
+                        "title": "Mark as done",
+                        "payload": "completed_" + str(skill),
+                    },
+                ],
+            },
+        }
+    }
+    callOneTimeNotif(token, request)
+
+
+def callOneTimeNotif(token, _request):
+    request = json.dumps(
+        {"recipient": {"one_time_notif_token": token}, "message": _request}
+    )
+
+    params = {"access_token": ACCESS_TOKEN}
+    headers = {"Content-Type": "application/json"}
+
+    r = requests.post(
+        "https://graph.facebook.com/v2.6/me/messages",
+        params=params,
+        headers=headers,
+        data=request,
+    )
+    if r.status_code != 200:
+        logging.error(r.status_code)
+        logging.error(r.text)
+
+
+def callSendAPI(sender_psid, _request):
+    request = json.dumps({"recipient": {"id": sender_psid}, "message": _request})
 
     params = {"access_token": ACCESS_TOKEN}
     headers = {"Content-Type": "application/json"}

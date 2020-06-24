@@ -5,6 +5,37 @@ from google.cloud import firestore
 db = firestore.Client()
 
 
+def delete_notifications(date):
+    notif_refs = db.collection("notifications")
+    query = notif_refs.where("notif_date", "==", str(date))
+    docs = query.stream()
+    for doc in docs:
+        doc.reference.delete()
+
+
+def get_notifications(date_today):
+    notif_refs = db.collection("notifications")
+    query = notif_refs.where("notif_date", "==", str(date_today))
+    docs = query.stream()
+    notifs = []
+    for doc in docs:
+        notifs.append(doc.to_dict())
+    return notifs
+
+
+def save_notification(psid, skill, assignment, notif_date, token):
+    db.collection("notifications").add(
+        {
+            "psid": psid,
+            "skill": skill,
+            "cur_assignment": assignment,
+            "notif_date": notif_date,
+            "timestamp_creation": firestore.SERVER_TIMESTAMP,
+            "token": token,
+        }
+    )
+
+
 def get_progress_skill(psid, skill):
     doc = db.collection("progress_skills").document(str(psid) + "_" + str(skill)).get()
     if doc.exists:

@@ -11,7 +11,8 @@
           "release_date": "01.08.2016",
           "level": 0,
           "rating": 4.5,
-          "url": "https://app.pluralsight.com/library/courses/docker-getting-started"
+          "url": "https://app.pluralsight.com/library/courses/docker-getting-started",
+          "time_hours": 5
         },
         {
           "type": "Online Course",
@@ -20,7 +21,8 @@
           "release_date": "04.01.2018",
           "level": 2,
           "rating": 5.0,
-          "url": "https://app.pluralsight.com/library/courses/docker-deep-dive-update/table-of-contents"
+          "url": "https://app.pluralsight.com/library/courses/docker-deep-dive-update/table-of-contents",
+          "time_hours": 9
         }
       ]
     },
