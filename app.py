@@ -2,13 +2,17 @@ import os
 from flask import request
 from flask import Flask
 from gcp import access_secret_version, get_notifications, delete_notifications
-from config import FB_CHALLENGE
+from config import FB_CHALLENGE, PROJECT_ID
 import logging_handler
 import logging
 from fb import handleMessage, handlePostback, handleOptin, generate_one_time_template
 from datetime import date, timedelta
 
 app = Flask(__name__)
+
+CHALLENGE = access_secret_version(
+    PROJECT_ID, FB_CHALLENGE["name"], FB_CHALLENGE["version"]
+)
 
 
 @app.route("/webhook", methods=["GET"])
@@ -18,7 +22,7 @@ def verify():
     if request.args.get("hub.mode") == "subscribe" and request.args.get(
         "hub.challenge"
     ):
-        if not request.args.get("hub.verify_token") == FB_CHALLENGE:
+        if not request.args.get("hub.verify_token") == CHALLENGE:
             return "Verification token mismatch", 403
         return request.args["hub.challenge"], 200
 
