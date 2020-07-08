@@ -1,6 +1,10 @@
 # Mentor chatbot for Facebook Messenger
 
-Raido is open sourced chatbot for Facebook Messenger.   
+Raido is open sourced chatbot for Facebook Messenger. 
+
+### How the bot works?
+
+You select the skill you want to master (Photoshop, Docker, Kubernetes, Frontend development and etc.), your level and time you have. After that Raido proposes the path with several tasks that you need to complete in order to master that skill. Alongside the way you will get notification (in a several days - when Raido thinks you should be done with the task and if user agreed to receive such a notification) and get a new task.
 
 To try out the chatbot write to the app page [here](https://www.facebook.com/Raido-Mentor-Bot-109235004160923).
 
