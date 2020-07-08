@@ -1,9 +1,22 @@
-# Home for the mentor chatbot project
+# Mentor chatbot for Facebook Messenger
 
-to run locally:
-create a file env.sh and populate the following values
-export GOOGLE_APPLICATION_CREDENTIALS=
+Raido is open sourced chatbot for Facebook Messenger.   
 
-then
-1. source env.sh
-2. make run
+To try out the chatbot write to the app page [here](https://www.facebook.com/Raido-Mentor-Bot-109235004160923).
+
+### Deployment
+
+The bot is hosted in GCP and deployed via Cloud Build to Cloud Run service. It happened automatically with push to master branch.
+
+### Local debugging
+
+For deploying and running locally use the Makefile. You would need to prepare the google cloud credentials for your test environment and download the ngrok.
+
+For testing the bot itself create a new test app in Facebook apps and the ngrok link as the endpoint. After that feel free to create a new pull request for changes.
+
+### Contributing
+
+Feel free to explore the bot and propose your ideas as issues.
+
+
+Or start with a new fork and create a new pull request for this repository. As soon as it's reviewed and merged the automatic deployment will occur.
