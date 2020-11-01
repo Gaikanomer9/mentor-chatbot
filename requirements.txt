@@ -1,7 +1,7 @@
 Flask 
 gunicorn
 pytest
-google-cloud-secret-manager
+google-cloud-secret-manager==1.0.0
 google-cloud-logging
 google-cloud-firestore
 alphabet-detector
