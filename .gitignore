@@ -9,3 +9,4 @@ venv/
 env.sh
 ngrok
 requests_to_messenger.sh
+.idea

@@ -4,3 +4,4 @@ pytest
 google-cloud-secret-manager
 google-cloud-logging
 google-cloud-firestore
+alphabet-detector

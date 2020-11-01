@@ -1,6 +1,7 @@
 import requests
 import json
 import logging_handler
+from alphabet_detector import AlphabetDetector
 import logging
 from datetime import date, timedelta
 from config import FB_TOKEN, PROJECT_ID
@@ -22,6 +23,8 @@ skill_selection_text = "Send me the name of the skill you want to learn or simpl
 level_selection_text = "Perfect! What is your approximate level of knowledge in "
 time_selection_text = "How much time for learning this topic do you have per week?"
 
+ad = AlphabetDetector()
+
 
 def handleOptin(sender_psid, received_message):
     if received_message.get("type") == "one_time_notif_req":
@@ -40,8 +43,8 @@ def handleOptin(sender_psid, received_message):
         save_notification(sender_psid, skill, assignment, notif_date, token)
         request = {
             "text": "All right! I will check up on you after "
-            + str(days_to_complete)
-            + " days."
+                    + str(days_to_complete)
+                    + " days."
         }
         callSendAPI(sender_psid, request)
 
@@ -67,7 +70,9 @@ def handleMessage(sender_psid, received_message):
             generate_template_time_picker(payload, sender_psid)
             return
     elif received_message.get("text"):
-        if context["context"] == "submit_skill":
+        if check_latin(sender_psid, received_message.get("text")):
+            pass
+        elif context["context"] == "submit_skill":
             generate_template_skill_submission(sender_psid, received_message)
             return
         elif received_message["text"] == "my skills":
@@ -78,8 +83,10 @@ def handleMessage(sender_psid, received_message):
             return
         else:
             # default request
-            request = {"text": "Didn't get that, sorry!"}
+            request = {"text": "I'm not that good with understanding human speech now. " +
+                               "Can you try using the menu, please?"}
             callSendAPI(sender_psid, request)
+            generate_template_show_skills(sender_psid)
     return
 
 
@@ -118,6 +125,15 @@ def handlePostback(sender_psid, received_postback):
     return
 
 
+def check_latin(sender_psid, text):
+    if not ad.is_latin(text):
+        request = {"text": "Sorry! I can only speak in English!"}
+        callSendAPI(sender_psid, request)
+        return True
+    else:
+        return False
+
+
 def template_skills_apply(sender_psid):
     request = {"text": "Cool! Will start learning this as soon as it's implemented!"}
     callSendAPI(sender_psid, request)
@@ -153,8 +169,8 @@ def gen_temp_get_started(sender_psid):
     name = getName(sender_psid)
     request = {
         "text": "Welcome, "
-        + name
-        + "! Hello! I'm Raido bot and I will help you learn skills you want. I can coach you on learning the whole knowledge path (like frontend dev or DevOps) or help you get the specific skill (e.g. Photoshop, Docker).",
+                + name
+                + "! Hello! I'm Raido bot and I will help you learn skills you want. I can coach you on learning the whole knowledge path (like frontend dev or DevOps) or help you get the specific skill (e.g. Photoshop, Docker).",
     }
     callSendAPI(sender_psid, request)
     request = {
@@ -187,8 +203,8 @@ def generate_quick_reply_pagination(payload, sender_psid):
 def generate_quick_reply_skill(payload, sender_psid):
     request = {
         "text": level_selection_text
-        + get_skill(int(payload.split("_")[2]))["name"]
-        + "?",
+                + get_skill(int(payload.split("_")[2]))["name"]
+                + "?",
         "quick_replies": generateQuickRepliesLevel(int(payload.split("_")[2])),
     }
     callSendAPI(sender_psid, request)
@@ -238,13 +254,13 @@ def gen_templ_one_time_req(sender_psid, skill, assignment, user_time, course_tim
                 "template_type": "one_time_notif_req",
                 "title": "Check on your progress for the task in a couple of days?",
                 "payload": "one_time_request_"
-                + str(skill)
-                + "_"
-                + str(assignment)
-                + "_"
-                + str(user_time)
-                + "_"
-                + str(course_time),
+                           + str(skill)
+                           + "_"
+                           + str(assignment)
+                           + "_"
+                           + str(user_time)
+                           + "_"
+                           + str(course_time),
             },
         }
     }
@@ -272,7 +288,7 @@ def generate_template_complete_task(sender_psid, payload):
         )
         request = {
             "text": "Congratulations! You completed learning of the "
-            + get_skill(skill_progress["skill"])["name"]
+                    + get_skill(skill_progress["skill"])["name"]
         }
         callSendAPI(sender_psid, request)
     else:
@@ -327,16 +343,16 @@ def template_skills_task(psid, skill_num):
     asign_started = skill["timestamp_creation"]
 
     text = (
-        "Your new assignment is the "
-        + asign_type
-        + ' "'
-        + asign_name
-        + '" by '
-        + asign_author
-        + ". \n\n"
+            "Your new assignment is the "
+            + asign_type
+            + ' "'
+            + asign_name
+            + '" by '
+            + asign_author
+            + ". \n\n"
     )
     text += (
-        "Rating: " + str(asign_rating) + "\n\n" + "Started: " + str(asign_started)[:10]
+            "Rating: " + str(asign_rating) + "\n\n" + "Started: " + str(asign_started)[:10]
     )
 
     buttons = [
@@ -355,7 +371,7 @@ def template_skills_task(psid, skill_num):
     request = {
         "attachment": {
             "type": "template",
-            "payload": {"template_type": "button", "text": text, "buttons": buttons,},
+            "payload": {"template_type": "button", "text": text, "buttons": buttons, },
         }
     }
     callSendAPI(psid, request)
@@ -367,14 +383,14 @@ def template_skills_progress(psid):
     for skill in skills:
         skill_data = get_skill(skill["skill"])
         progress = (
-            str(
-                int(
-                    float(skill["cur_assignment"])
-                    / float(len(skill_data["assignments"]))
-                    * 100
-                )
-            ).zfill(1)
-            + "%"
+                str(
+                    int(
+                        float(skill["cur_assignment"])
+                        / float(len(skill_data["assignments"]))
+                        * 100
+                    )
+                ).zfill(1)
+                + "%"
         )
         asign_type = skill_data["assignments"][int(skill["cur_assignment"])]["type"]
         asign_name = skill_data["assignments"][int(skill["cur_assignment"])]["name"]
@@ -564,8 +580,8 @@ def generate_one_time_template(token, assignment, skill):
             "payload": {
                 "template_type": "button",
                 "text": 'Hey! This is a reminder for the task "'
-                + str(asign_name)
-                + " you had. Did you make it and ready for a new challenge?",
+                        + str(asign_name)
+                        + " you had. Did you make it and ready for a new challenge?",
                 "buttons": [
                     {
                         "type": "postback",
