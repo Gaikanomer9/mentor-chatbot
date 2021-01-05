@@ -19,6 +19,8 @@ steps:
         "--platform",
         "managed",
         "--allow-unauthenticated",
+        "--max-instances",
+        "1",
       ]
 
 images:
